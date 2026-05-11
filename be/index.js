@@ -1,5 +1,6 @@
 const express = require("express");
 const session = require("express-session");
+const path = require("path");
 const app = express();
 const cors = require("cors");
 const dbConnect = require("./db/dbConnect");
@@ -20,8 +21,18 @@ app.use(
   }),
 );
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:3000", // React frontend
+    credentials: true,               // Cho phép gửi/nhận cookie session
+  })
+);
 app.use(express.json());
+
+// Serve ảnh tĩnh: ưu tiên be/images/ (upload mới), fallback sang fe/src/images/ (ảnh sample)
+app.use("/images", express.static(path.join(__dirname, "images")));
+app.use("/images", express.static(path.join(__dirname, "../fe/src/images")));
+
 app.use("/api/user", UserRouter);
 app.use("/api/photo", PhotoRouter);
 app.use("/api/admin", LoginRouter);

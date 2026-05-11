@@ -7,7 +7,9 @@
 const path = "http://localhost:8081/api";
 
 async function get(url) {
-  const response = await fetch(`${path}${url}`);
+  const response = await fetch(`${path}${url}`, {
+    credentials: "include", // Gửi cookie session theo mỗi request
+  });
   const models = response.json();
   return models;
 }
@@ -18,7 +20,7 @@ async function post(url, obj) {
     headers: {
       "Content-Type": "application/json",
     },
-
+    credentials: "include", // Gửi cookie session theo mỗi request
     body: JSON.stringify(obj),
   });
 

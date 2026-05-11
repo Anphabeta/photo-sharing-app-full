@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Typography } from "@mui/material";
 
 import "./styles.css";
-import { useParams } from "react-router-dom";
-import models from "../../modelData/models";
+import { useParams, useNavigate } from "react-router-dom";
 import fetchModel from "../../lib/fetchModelData";
 
 /**
@@ -11,6 +10,7 @@ import fetchModel from "../../lib/fetchModelData";
  */
 function UserDetail({ onOwnerChange }) {
   const { userId } = useParams();
+  const navigate = useNavigate();
 
   const [userDetail, setUserDetail] = useState({});
 
@@ -18,11 +18,11 @@ function UserDetail({ onOwnerChange }) {
     async function fetchData() {
       const data = await fetchModel.get(`/user/${userId}`);
       setUserDetail(data);
-      onOwnerChange(userDetail.first_name);
+      onOwnerChange(data.first_name); // dùng data thay vì state cũ
     }
 
     fetchData();
-  }, [userDetail]);
+  }, [userId]); // chỉ re-run khi userId thay đổi, không phải khi userDetail thay đổi
 
   // const userDetail = models.userModel(userId);
 
@@ -34,7 +34,7 @@ function UserDetail({ onOwnerChange }) {
       <Typography variant="h5">{userDetail.occupation}</Typography>
       <Typography variant="h5">{userDetail.location}</Typography>
       <Typography variant="body1">{userDetail.description}</Typography>
-      <Button href={`/photos/${userId}`}>See Image</Button>
+      <Button variant="contained" onClick={() => navigate(`/photos/${userId}`)}>See Image</Button>
     </>
   );
 }
